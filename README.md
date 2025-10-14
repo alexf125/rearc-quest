@@ -94,7 +94,7 @@ You can do as many as you like. We suspect though that once you start you won't 
 5. Any README or documentation you feel would help us navigate your quest.
 
 ### Q. How do I share the submission?
-Your submission should be presented as one or both of the following:
+Your submission should be emailed back to us as one or both of the following:
 
 1. A link to a public hosted git repository in your own namespace
 1. A compressed file containing your project directory (zip, tgz, etc). Include the .git sub-directory if you used git.
