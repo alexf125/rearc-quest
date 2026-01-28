@@ -128,3 +128,32 @@ How could you add information to your programmatic access requests to let BLS co
 
 ### Q. Can I use AI to assist me?
 You may use AI as a reference tool but there will be a strong expectation to exhibit the same expertise and understanding from your submission in your interview. In addition we encourage you to be open about any usage! Please document what you used, what your prompts were, how it helped, what it got wrong, etc.
+
+---
+
+# Rearc Quest Solution Documentation
+I used Python scripts for the Part 1 and Part 2 data extractions and S3 file loads/deletes.
+I used Databricks to connect to AWS S3 and run the PySpark Data_Analytics.ipynb Notebook.
+I used Google (and the AI you get every time you Google things these day) to review syntax and check functionality/limitations of the used language or library.
+I added comments to all scripts and notebooks for reference on what processes do and any potential thought processes behind decisions.
+
+## Part 1: AWS S3 & Sourcing Datasets
+This was a Python script (`Dataset_to_S3.py`) that utilizes BeautifulSoup to help parse the Web Directory for files and last modified dates and boto3 for AWS S3 access. This script requests the dataset URL to grab the html of the web directory for parsing. The html is parsed for links that aren't for the Parent Directory and grabs the file names and returns the list of file names and S3 file paths. The File Names list is then used to create the new request URLs for each file to grab the data, content type, and last modifed date information. This information is the compared to the files in the AWS S3 bucket by file name (does the file exist) and by last modified date (has the file been udpated), if either of these conditions are met, the file is uploaded to the S3 bucket. After the uploads are completed, we the list of files from the web directory against the S3 bucket to determine if any files have been removed from the web directory and if they have, remove the file from the S3 bucket. This can be updated to accept paramters, but it seemed unnecessary for this exercise.
+
+## Part 2: APIs
+This was a simple Python script (`API_to_S3.py`) that utilizes boto3 for AWS S3 access. This script requests the API URL to grab the JSON data, then uploads the file to the S3 bucket, overwriting any file that already exists. This can be updated to include an Archive step or to accept parameters, but seemed unnecessary for this exercise.
+
+## Part 3: Data Analytics
+0. Load both the csv file from **Part 1** `pr.data.0.Current` and the json file from **Part 2**
+   This was a Databricks PySpark notebook (Data_Analytics.ipynb) that accessed the AWS S3 bucket files through an External Data connection. This allowed for the files to be easily accessed and read into data frames from a PySpark notebook. For the pr.data.0 file, I noticed that it was tab separated with a bunch of whitespace characters, so I loaded it using additional spark.read options to set the format to CSV, set the separator to '\t' separate on the tabs, set it to ingnore leading and empty whitespace characters to clean the data during the load, and set it to infer the schema so that the data would be loaded with the proper data types instead of all strings. For the honolulu-api JSON file, I noticed that the data column is a list of dictionaries, with the Key as the Column Name and the Value as the column value. This meant that I could select the data column, overwrite it with an exploaded version so that each ditionary is in it's own row, then create new columns from each value in the dictionary, creating a proper table for use in analysis.
+
+1. Using the dataframe from the population data API (Part 2), generate the mean and the standard deviation of the annual US population across the years [2013, 2018] inclusive.
+   For this I filtered on year between 2013 and 2018, aggregated for mean and standard deviation on population, then select just the Mean_Population and Standard_Dev_Population columns.
+   
+2. Using the dataframe from the time-series (Part 1), For every series_id, find the *best year*: the year with the max/largest sum of "value" for all quarters in that year. Generate a report with each series id, the best year for that series, and the summed value for that year.
+   For this I set up a windowSpec for the row_number() window function I intended to use, then I grouped by `series_id` and `year` to sum the `value` column, used the `row_number` window function to create the `row_num` column where the records with the highest summed `value` column over `series_id` is set to 1. Then we filter on `row_num == 1` to grab the record with max summed `value` for each `series_id`, then we select just the `series_id`, `year`, and `value columns` for the final result.
+   
+3. Using both dataframes from Part 1 and Part 2, generate a report that will provide the `value` for `series_id = PRS30006032` and `period = Q01` and the `population` for that given year (if available in the population dataset). The below table shows an example of one row that might appear in the resulting table:
+   For this I left joined the two datasets on `Year`, filtered on `series_id = PRS30006032` and `period = Q01`, and selected the `series_id`, `year`, `period`, and `population` columns for the final result.
+
+   
