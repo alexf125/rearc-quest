@@ -134,7 +134,7 @@ You may use AI as a reference tool but there will be a strong expectation to exh
 # Rearc Quest Solution Documentation
 I used Python scripts for the Part 1 and Part 2 data extractions and S3 file loads/deletes.
 I used Databricks to connect to AWS S3 and run the PySpark Data_Analytics.ipynb Notebook.
-I used Google (and the AI you get every time you Google things these day) to review syntax and check functionality/limitations of the used language or library.
+I used Google (and the AI you get every time you Google things these day) to review syntax, check functionality/limitations of the used language or library, and investigate any errors that popped up during testing.
 I added comments to all scripts and notebooks for reference on what processes do and any potential thought processes behind decisions.
 
 ## Part 1: AWS S3 & Sourcing Datasets
@@ -156,4 +156,5 @@ This was a simple Python script (`API_to_S3.py`) that utilizes boto3 for AWS S3 
 3. Using both dataframes from Part 1 and Part 2, generate a report that will provide the `value` for `series_id = PRS30006032` and `period = Q01` and the `population` for that given year (if available in the population dataset). The below table shows an example of one row that might appear in the resulting table:
   - For this I left joined the two datasets on `Year`, filtered on `series_id = PRS30006032` and `period = Q01`, and selected the `series_id`, `year`, `period`, and `population` columns for the final result.
 
-   
+## Part 4: Infrastructure as Code & Data Pipeline with AWS CDK   
+I used Terraform to get everything set up in AWS. I made additional updates to my Python scripts for compatibility with Lambda and have included those in the zip files used to create the Lambda functions. I added an additional cell in the Databricks PySpark notebook that returns the report's data to the Lambda Function script for logging and created a Python script that utilizes the Databricks API to execute a Databricks job that runs my Analytics notebook, accesses the job information, then retrieves the data the notebook prepares for export to logging. I've set the Dataset and API jobs to run once daily at a set time of 16:00 UTC (other times were used for testing).
