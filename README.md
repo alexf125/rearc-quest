@@ -140,8 +140,25 @@ I added comments to all scripts and notebooks for reference on what processes do
 ## Part 1: AWS S3 & Sourcing Datasets
 This was a Python script (`Dataset_to_S3.py`) that utilizes BeautifulSoup to help parse the Web Directory for files and last modified dates and boto3 for AWS S3 access. This script requests the dataset URL to grab the html of the web directory for parsing. The html is parsed for links that aren't for the Parent Directory and grabs the file names and returns the list of file names and S3 file paths. The File Names list is then used to create the new request URLs for each file to grab the data, content type, and last modifed date information. This information is the compared to the files in the AWS S3 bucket by file name (does the file exist) and by last modified date (has the file been udpated), if either of these conditions are met, the file is uploaded to the S3 bucket. After the uploads are completed, we the list of files from the web directory against the S3 bucket to determine if any files have been removed from the web directory and if they have, remove the file from the S3 bucket. This can be updated to accept paramters, but it seemed unnecessary for this exercise.
 
+Here are the links to all of the Part 1 files in the S3 Bucket:
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.class
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.contacts
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.data.0.Current
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.data.1.AllData
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.duration
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.footnote
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.measure
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.period
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.seasonal
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.sector
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.series
+- https://af-rearc-quest.s3.amazonaws.com/BLS/pr.txt
+
 ## Part 2: APIs
 This was a simple Python script (`API_to_S3.py`) that utilizes boto3 for AWS S3 access. This script requests the API URL to grab the JSON data, then uploads the file to the S3 bucket, overwriting any file that already exists. This can be updated to include an Archive step or to accept parameters, but seemed unnecessary for this exercise.
+
+Here's the link to the extracted JSON file in the S3 Bucket:
+- https://af-rearc-quest.s3.amazonaws.com/honolulu-api/yearly_population.json
 
 ## Part 3: Data Analytics
 The Data_Analytics.ipynb file I included in the repo contains the outputs of each cell for your review.
