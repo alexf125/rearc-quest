@@ -144,6 +144,8 @@ This was a Python script (`Dataset_to_S3.py`) that utilizes BeautifulSoup to hel
 This was a simple Python script (`API_to_S3.py`) that utilizes boto3 for AWS S3 access. This script requests the API URL to grab the JSON data, then uploads the file to the S3 bucket, overwriting any file that already exists. This can be updated to include an Archive step or to accept parameters, but seemed unnecessary for this exercise.
 
 ## Part 3: Data Analytics
+The Data_Analytics.ipynb file I included in the repo contains the outputs of each cell for your review.
+
 0. Load both the csv file from **Part 1** `pr.data.0.Current` and the json file from **Part 2**
   - This was a Databricks PySpark notebook (Data_Analytics.ipynb) that accessed the AWS S3 bucket files through an External Data connection. This allowed for the files to be easily accessed and read into data frames from a PySpark notebook. For the pr.data.0 file, I noticed that it was tab separated with a bunch of whitespace characters, so I loaded it using additional spark.read options to set the format to CSV, set the separator to '\t' separate on the tabs, set it to ingnore leading and empty whitespace characters to clean the data during the load, and set it to infer the schema so that the data would be loaded with the proper data types instead of all strings. For the honolulu-api JSON file, I noticed that the data column is a list of dictionaries, with the Key as the Column Name and the Value as the column value. This meant that I could select the data column, overwrite it with an exploaded version so that each ditionary is in it's own row, then create new columns from each value in the dictionary, creating a proper table for use in analysis.
 
